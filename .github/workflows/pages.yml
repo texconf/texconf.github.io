@@ -23,6 +23,24 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - uses: actions/checkout@v4
+        with:
+          repository: texconf/2026
+          path: 2026
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache-dependency-path: 2026/package-lock.json
+
+      - name: Build hub index from 2026
+        working-directory: 2026
+        env:
+          TEXCONF_HUB_ROOT: ${{ github.workspace }}
+        run: |
+          npm ci
+          npm run build:hub
+
       - uses: actions/configure-pages@v5
         with:
           enablement: true
