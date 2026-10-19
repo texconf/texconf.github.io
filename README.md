@@ -6,6 +6,13 @@ TeXConfの恒常の入口です。公開URLは <https://texconf.github.io> で�
 
 ## GitHub Pagesの公開元
 
-入口ページの`index.html`はCIが生成します。リポジトリに生成物を含めない運用のため、Pagesの公開元は **GitHub Actions**（ワークフロー `Deploy Pages`）にしてください。
+入口ページの`index.html`はCIが生成し、`gh-pages`ブランチへ書き出します（2026年サイトと同じ方式）。`main`には生成物を置きません。
 
-[Settings → Pages](https://github.com/texconf/texconf.github.io/settings/pages) の Build and deployment で Source を GitHub Actions に切り替えたあと、`Deploy Pages` を再実行します。公開元が `main` ブランチのままだと、pushのたびにブランチ上のファイルだけが配信され、`index.html` が無いため <https://texconf.github.io/> が404になります（Actionsのビルド自体は成功している場合があります）。
+[Settings → Pages](https://github.com/texconf/texconf.github.io/settings/pages) の Build and deployment で次を選びます。
+
+- **Source**: Deploy from a branch
+- **Branch**: `gh-pages`、フォルダ `/`（root）
+
+「GitHub Actions」を選ぶ画面に、こちらで使うワークフロー名（Deploy Pages）を指定する項目はありません。ビルドの再実行は、リポジトリの **Actions** タブ → 左の **Deploy Pages** → **Run workflow** です。
+
+公開元が `main` のままだと、`index.html` が無い状態が配信され <https://texconf.github.io/> が404になります。
