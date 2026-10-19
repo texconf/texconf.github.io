@@ -9,6 +9,7 @@ permissions:
   contents: read
   pages: write
   id-token: write
+  actions: read
 
 concurrency:
   group: pages
@@ -22,6 +23,16 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+
+      - name: Require GitHub Actions as Pages source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          build_type=$(gh api "repos/${GITHUB_REPOSITORY}/pages" --jq .build_type)
+          if [ "$build_type" != "workflow" ]; then
+            echo "::error::Pagesの公開元がGitHub Actionsではありません（build_type=${build_type}）。リポジトリ Settings → Pages → Build and deployment で Source を GitHub Actions に変更してください。mainブランチ公開のままだと index.html を置かない運用でルートが404になります。"
+            exit 1
+          fi
 
       - uses: actions/checkout@v4
         with:
