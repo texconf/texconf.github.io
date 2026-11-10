@@ -45,7 +45,7 @@
             <img class="featured-event-logo" src="/2026/texconf-logo.png" alt="" decoding="async">
             <h2>TeXConf 2026開催概要</h2>
           </span>
-          <!-- build:event-status:start -->参加者募集中<!-- build:event-status:end -->
+          <!-- build:event-status:start --><span class="event-status">参加者募集中</span><!-- build:event-status:end -->
         </div>
 
         <ul class="event-facts">
@@ -101,5 +101,42 @@
       <p>X：<a href="https://x.com/texconfjp">@texconfjp</a></p>
     </div>
   </footer>
+  <script>
+    (function () {
+      fetch("/2026/hub-sync.json", { cache: "no-store" })
+        .then(function (response) {
+          if (!response.ok) {
+            throw new Error("hub-sync fetch failed");
+          }
+          return response.json();
+        })
+        .then(function (data) {
+          var statusEl = document.querySelector(".featured-event .event-status");
+          if (statusEl && data.label != null) {
+            statusEl.textContent = data.label;
+            statusEl.className = data.modifier
+              ? "event-status " + data.modifier
+              : "event-status";
+          }
+          var previewEl = document.querySelector(".featured-event .talk-preview");
+          if (previewEl && Array.isArray(data.talks)) {
+            previewEl.replaceChildren();
+            data.talks.forEach(function (talk) {
+              var li = document.createElement("li");
+              var titleEl = document.createElement("span");
+              titleEl.className = "talk-title";
+              titleEl.textContent = talk.title || "";
+              var speakerEl = document.createElement("span");
+              speakerEl.className = "talk-speaker";
+              speakerEl.textContent = talk.speaker || "";
+              li.appendChild(titleEl);
+              li.appendChild(speakerEl);
+              previewEl.appendChild(li);
+            });
+          }
+        })
+        .catch(function () {});
+    })();
+  </script>
 </body>
 </html>
